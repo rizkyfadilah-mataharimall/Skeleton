@@ -1,0 +1,636 @@
+FORMAT: 1A
+HOST: http://dev.kaspro.id/api
+
+# KasPro API
+
+API Documentations for Kaspro.
+
+# Request and Responses
+
+## Allowed HTTPs requests:
+
+All requests are to be made with one of the following request methods:
+
+| Link | Remarks |
+|---|---|
+| HEAD | Same as GET, but only return the headers, no body. |
+| GET | Used for retrieving resources. |
+| POST | Used for creating resources. |
+| PATCH | Used for updating/modifying resources with partial JSON data. Using PATCH is described in its own section. |
+| PUT | Used for replacing resources or collections. For PUT requests with no body attribute, be sure to set the `Content-Length` header to zero. |
+| DELETE | Used for deleting resources. |
+
+## Login Validation [/087781218784/custom/validation]
+
+### Login Validation [GET]
+
++ Request (application/json)
+        
+    + Headers 
+    
+            Accept-Language: ID
+            Application: kaspro
+            token: KASPRO_TOKEN
+
++ Response 200 (application/json)
+
+        {
+            "code": 0,
+            "otp": true,
+            "message": "Existing",
+            "type": "subscriber"
+        }
+
+
+## Login OTP [/087781218784/otp]
+
+### Request OTP [GET]
+
++ Request (application/json)
+    
+    + Headers 
+    
+            Accept-Language: ID
+            Application: kaspro
+            token: KASPRO_TOKEN
+
+
++ Response 200 (application/json)
+
+        {
+            "code": 0,
+            "otp": "7482",
+            "expiry": "180",
+            "message": "OTP Anda adalah 7482. Waspada penipuan: Jangan berikan kode RAHASIA ini kepada siapa pun."
+        }
+
+### Delete OTP [DELETE]
+
++ Request (application/json)
+    
+   + Headers 
+    
+            Accept-Language: ID
+            Application: kaspro
+            token: KASPRO_TOKEN
+        
+        
++ Response 200
+
+        {
+            "code": 0,
+            "message": "Success"
+        }
+
+
+## Login Session [/087781218784/payu/session]
+
+### Getting Session [GET]
++ Request (application/json)
+    
+    + Headers 
+        
+            Accept-Language: ID
+            Application: kaspro
+            token: KASPRO_TOKEN
+            Authorization: Basic AUTHORIZATION
+
++ Response 200
+
+        {
+            "code": 0,
+            "bankpro-va-account": "",
+            "pockets": [{
+                "pocket-name": "",
+                "last-used": "2019-02-13 19:52:12",
+                "pocket-id": "2",
+                "available-balance": "154,380",
+                "current-balance": "154,380"
+            }, {
+                "pocket-name": "",
+                "last-used": "2018-12-11 21:30:37",
+                "pocket-id": "102",
+                "available-balance": "0",
+                "current-balance": "0"
+            }, {
+                "pocket-name": "",
+                "last-used": "2018-12-11 21:30:37",
+                "pocket-id": "103",
+                "available-balance": "0",
+                "current-balance": "0"
+            }],
+            "referral-code": "3v2e69",
+            "is-first-login": "0",
+            "account-number": "923460293211",
+            "otp": false,
+            "message": "",
+            "full-name": "Fadilah, Rizky",
+            "bni-va-account": "8693087781218784",
+            "session-id": "F7727BC3DA9E48298E203252C0CBAD70"
+        }
+
++ Response 403
+
+        {
+            "code": 202,
+            "message": "Data login tidak sesuai."
+        }
+        
+        
+
+        
+        
+## Reset Password [/087781218784/payu/password{?request-id}]
++ Parameters
+    + request-id - 201902140409023
+
+### Reset Password [DELETE]
+
++ Request (application/json)
+
+    + Headers
+    
+            Accept-Language: ID
+            Application: kaspro
+            token: KASPRO_TOKEN
+            
+
++ Response 200 
+
+        {
+            "message": "Kata sandi baru akan dikirim melalui SMS jika nomor Anda ada di sistem kami.",
+            "code": 0
+        }
+        
+
+## Change Password [/923460293211/payu/password]
+
+### Change Password [PUT] 
+
++ Request (application/json)
+
+    + Headers
+
+            Accept-Language: ID
+            Application: kaspro
+            token: KASPRO_TOKEN
+            nonce: SESSION_ID
+    
+    + Body
+    
+            {
+                "auth": {
+                    "password": "658614"
+                },
+                "request-id": "834592524124201902141004028",
+                "new-password": "123456"
+            }
+           
++ Response 200
+
+        {
+            "session-id": "E4932AC36A0530FB7F1563F1E1EBD6F4",
+            "message": "Password telah berhasil diubah.",
+            "code": 0
+        }
+
++ Response 200
+
+        {
+            "response-id": "1051902140002283",
+            "message": "Kata sandi yang baru anda masukkan tidak valid. Tolong pilih kata sandi yang tidak sama dengan kata sandi yang sebelumnya anda gunakan dan coba lagi.",
+            "code": 8
+        }
+
+
+## Profile  [/923460293211/payu]
+
+Get all Profile needs including all information for kaspro bank, account type, wallet.
+
+### Get Profile [GET]
+
++ Request (application/json)
+    
+    + Headers 
+
+            Accept-Language: ID
+            Application: kaspro
+            token: KASPRO_TOKEN
+            nonce: SESSION_ID
+
++ Response 200
+
+        {
+            "code": 0,
+            "message": "",
+            "account": {
+                "firstname": "Rizky",
+                "lastname": "Fadilah",
+                "account-number": "923460293211",
+                "account-name": "Fadilah, Rizky",
+                "account-type": "subscriber",
+                "account-status": "ACTIVE",
+                "subscriber": {
+                    "language": "ID",
+                    "authorized-email": "skyhill.117@gmail.com",
+                    "authorized-mobile": "087781218784",
+                    "last-name": "Fadilah",
+                    "first-name": "Rizky",
+                    "middle-name": " ",
+                    "billing-address": {
+                        "postal-code": "",
+                        "city": "",
+                        "coordinates": "0,0",
+                        "specific-address": ""
+                    }
+                },
+                "pockets": [{
+                    "pocket-name": "",
+                    "last-used": "2019-02-13 19:52:12",
+                    "pocket-id": "2",
+                    "available-balance": "154,380",
+                    "current-balance": "154,380"
+                }, {
+                    "pocket-name": "",
+                    "last-used": "2018-12-11 21:30:37",
+                    "pocket-id": "102",
+                    "available-balance": "0",
+                    "current-balance": "0"
+                }, {
+                    "pocket-name": "",
+                    "last-used": "2018-12-11 21:30:37",
+                    "pocket-id": "103",
+                    "available-balance": "0",
+                    "current-balance": "0"
+                }],
+                "kyc-status": "ACTIVE",
+                "update-status": "ACTIVE",
+                "referral-code": "3v2e69",
+                "bni-va-account": "8693087781218784",
+                "bankpro-va-account": "",
+                "bankpro-req-flag": "0",
+                "is-first-login": "0"
+            }
+        }
+      
+        
+## Profile Upgrade [/834592524124/premium/upgrade]
+
+### Profile Upgrade [POST]
+
++ Request (application/json)
+
+    + Headers
+          
+            Accept-Language: ID
+            Application: kaspro
+            token: KASPRO_TOKEN
+            nonce: SESSION_ID
+            
+            
+    + Body
+            
+            {
+              "subscriber": {
+                "address-present": "znsnnnn",
+                "purpose-of-trans-payment": "1",
+                "permanent-address": {
+                  "region-code": "Bangka Belitung",
+                  "city-code": "Belitung",
+                  "specific-address": "znsnnnn"
+                },
+                "customer-signature": "@base64",
+                "purpose-of-trans-transfer": "1",
+                "occupation": "Employee",
+                "gender": "Male",
+                "birth-place": "Jakarta",
+                "source-of-fund": "Business Income",
+                "purpose-of-trans-purchase": "1",
+                "purpose-of-trans-others": "Daily Transaction",
+                "mother-maiden": "mama",
+                "salary": "",
+                "first-name": "Abdul",
+                "id-type": "KTP",
+                "purpose-of-trans": "Daily Transaction",
+                "birth-date": "31-12-1989",
+                "nationality": "WNI (Warga Negara Indonesia)",
+                "resident-address": {
+                  "region-code": "Bangka Belitung",
+                  "city-code": "Belitung",
+                  "specific-address": "znsnnnn"
+                },
+                "address-permanent": "znsnnnn",
+                "idcard-image": "@base64",
+                "id-value": "1234545457676767",
+                "customer-image": "@base64",
+                "last-name": "Halim"
+              },
+              "auth": {
+                "password": "111111"
+              },
+              "request-id": "83459252412420190214041441"
+            }
+            
+            
++ Response 200
+
+            {
+                "response-id": "1051902140002285",
+                "session-id": "CB2F6A0873CF6B1A32251EAD075D4426",
+                "message": "Profil kamu sedang diproses sekarang. Kami bakal update lagi maksimum 24 jam ke depan. Untuk informasi lebih lanjut, silahkan hubungi 021-30053390",
+                "code": 0
+            }
+
+        
+## Kaspro Bank [/923460293211/bankpro/inquire]
+
+### Kaspro Bank Information [GET]
+
++ Request (application/json)
+    
+    + Headers 
+         
+            Accept-Language: ID
+            Application: kaspro
+            token: KASPRO_TOKEN
+            nonce: SESSION_ID
+
++ Response 200
+
+        {
+            "code": 0,
+            "inquire-data": {
+                "msisdn": "+6287781218784",
+                "account-name": "Rizky Fadilah",
+                "email": "rizky.fadilah@digiasia.asia",
+                "id-number": "1151884754884848",
+                "id-type": "KTP",
+                "country-code": "",
+                "gender": "1",
+                "birth-date": "01-01-1970",
+                "birth-place": "jajahava",
+                "address": "1hshshshs",
+                "city": "bshsuss",
+                "province": "hsushshshs",
+                "zip-code": "",
+                "additional-info": "",
+                "account-number": "115476117",
+                "balance": "20,473,856,394,758",
+                "status": true,
+                "verification": true
+            },
+            "message": "Success"
+        }
+
+            
++ Response 200
+
+        {
+            "code": 2,
+            "message": "BankPro Account not exist"
+        }
+        
+        
+        
+## Loyalty [/loyalty/inquire]
+
+### Loyalty Inquire [POST]
+
++ Request (application/json)
+    
+    + Headers 
+         
+            Accept-Language: ID
+            Application: kaspro
+            token: KASPRO_TOKEN
+            
+    + Body
+        
+            {
+                "amount": 0,
+                "subscriber": "087781218784",
+                "requestid": "087781218784201902141607049",
+                "invoke-earn": "0",
+                "sku": ""
+            }
+
+
++ Response 200
+
+        {
+            "code": 0,
+            "loyalty-accountnumber": "4878487781219",
+            "message": "Success",
+            "points": "500"
+        }
+        
++ Response 200
+
+        {
+            "code": 12,
+            "message": "NOT EXISTS"
+        }
+    
+        
+## Loyalty Register [/loyalty/register]
+
+### Register Loyalty [POST]
+
++ Request (application/json)
+
+    + Headers
+    
+            Accept-Language: ID
+            Application: kaspro
+            token: KASPRO_TOKEN
+    
+    + Body
+    
+            {
+                "amount": 0,
+                "subscriber": "081398458855",
+                "referralcode": "",
+                "requestid": "081398458855201902141611058",
+                "invoke-earn": "0",
+                "keyword": "REGISTRATION",
+                "sku": ""
+            }
+            
+            
++ Response 200
+
+        {
+            "code": 0,
+            "loyalty-accountnumber": "3855813984581",
+            "message": "Success",
+            "points": "0"
+        }
+    
+        
+## Prepaid List [/prepaid/list]
+
+### Get Prepaid List [GET]
+
++ Request (application/json)
+    
+    + Headers 
+         
+            Accept-Language: ID
+            Application: kaspro
+            token: KASPRO_TOKEN
+            nonce: SESSION_ID
+            
++ Response 200
+
+        {
+          "code": 0,
+          "prepaid": [
+            {
+              "product-name": "Axis 5RB",
+              "product-code": "SUB-SP-AX5H",
+              "network": "AXIS",
+              "amount": 5000,
+              "type": "airtime",
+              "nominal-value": 5000,
+              "product-description": "Axis 5RB",
+              "total-amount": 6000
+            },
+            {
+              "product-name": "Axis 10k",
+              "product-code": "SUB-AXIS10K",
+              "network": "AXIS",
+              "amount": 10000,
+              "type": "airtime",
+              "nominal-value": 10000,
+              "product-description": "Axis 10k",
+              "total-amount": 11000
+            },
+            {
+              "product-name": "BRONET 300MB",
+              "product-code": "SUB-AXISBRONET300MB",
+              "network": "AXIS",
+              "amount": 12000,
+              "type": "data",
+              "nominal-value": 12000,
+              "product-description": "Kuota 300 MB 24 Jam Masa aktif 7 hari",
+              "total-amount": 12000
+            },
+            {
+              "product-name": "Axis 15k",
+              "product-code": "SUB-AXIS15K",
+              "network": "AXIS",
+              "amount": 15000,
+              "type": "airtime",
+              "nominal-value": 15000,
+              "product-description": "Axis 15k",
+              "total-amount": 16000
+            }
+          ],
+          "message": "Success"
+        }
+
+
+## Pay by Token [/1312/token]
+
+### Payment [GET]
+
++ Request (application/json)
+    
+    + Headers 
+         
+            Accept-Language: ID
+            Application: kaspro
+            token: KASPRO_TOKEN
+            nonce: SESSION_ID
+            
++ Response 200
+
+        {
+            "code": 0,
+            "otp": "158305",
+            "expiry": "1800",
+            "message": "Success"
+        }
+        
+
+## KreditPro [/131234592729/kreditpro/getlimit]
+
+### Inquire [POST]
+
++ Request (application/json)
+    
+    + Headers 
+         
+            Accept-Language: ID
+            Application: kaspro
+            token: KASPRO_TOKEN
+        
++ Response 200
+
+        {
+            "code": 0,
+            "out_standing_loan": "0",
+            "grading": "Mass",
+            "pending": "false",
+            "customerid": "87781218784",
+            "denom": "7000",
+            "message": "Success",
+            "out_standing_loan_base_amount": "0",
+            "points": "5"
+        }
+        
+        
+## Purcahse Pulsa BNPL [/131234592729/purchases/inquire{?biller,sku,brand}]
++ Parameters
+    + biller - SUB-XL
+    + sku - SUB-XL5K
+    + brand - XL
+
+### Purchase Pulsa BNPL [GET]
+
++ Request (application/json)
+    
+    + Headers 
+         
+            Accept-Language: ID
+            Application: kaspro
+            token: KASPRO_TOKEN
+            nonce: SESSION_ID
+        
++ Response 200
+
+        {
+            "code": 0,
+            "inquire-data": {
+                "amount": "5,000",
+                "product-name": "XL 5K",
+                "network": "XL",
+                "fee": "3,000"
+            },
+            "response-id": null,
+            "message": "Success",
+            "session-id": "5DDD2CAFD2C4A69389075B9B22B0C528"
+        }
+        
+## Purchases Pulsa BNPL Submit [/131234592729/kreditpro/create/loan]
+
+### Create Loan [GET]
+
++ Request (application/json)
+    
+    + Headers 
+         
+            Accept-Language: ID
+            Application: kaspro
+            token: KASPRO_TOKEN
+            nonce: SESSION_ID
+        
+        
++ Response 200
+
+        {
+            "date": "2019-02-19 03:35",
+            "code": 23,
+            "response-id": "1051902190000042",
+            "message": "Transaction Rejected, due to the amount requested exceed the limit of the person or product selected"
+        }
